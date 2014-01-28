@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Net.Http;
-using System.Reflection;
-using System.Web.Http.Routing;
-using Microsoft.Owin.Hosting;
+using System.Configuration;
+using Topshelf;
 
 namespace CafePrintServer
 {
@@ -10,10 +8,26 @@ namespace CafePrintServer
     {
         static void Main(string[] args)
         {
-            const string baseAddress = "http://localhost:9000/";            
-            WebApp.Start<Startup>(url: baseAddress);
-            Console.WriteLine("Listening at {0}...", baseAddress);
-            while(true){}
+            var port = Convert.ToInt32(ConfigurationManager.AppSettings["ServerPort"] ?? "9000");
+
+            HostFactory.Run(
+                x =>
+                    {
+                        x.Service<PrintServerService>(
+                            s =>
+                                {
+                                    s.ConstructUsing(
+                                        name =>
+                                        new PrintServerService(port));
+                                    s.WhenStarted(tc => tc.Start());
+                                    s.WhenStopped(tc => tc.Stop());
+                                });
+                        x.RunAsLocalSystem();
+
+                        x.SetDisplayName("Cafe Print Server");
+                        x.SetDescription("Receipt printing server for the Cafe application.");
+                        x.SetServiceName("CafePrintServer");
+                    });
         }
     }
 }

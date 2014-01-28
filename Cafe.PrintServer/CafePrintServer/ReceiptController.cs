@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Web.Http;
-using AttributeRouting.Web.Http;
 
 namespace CafePrintServer
 {
@@ -16,7 +15,6 @@ namespace CafePrintServer
         int _lineHeight;
         string _printerName;
 
-        [POST("/receipt/print")]
         public void Post([FromBody] Order order)
         {
             _printerName = ConfigurationManager.AppSettings["PrinterName"];
