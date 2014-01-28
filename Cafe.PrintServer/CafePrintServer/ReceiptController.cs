@@ -13,12 +13,9 @@ namespace CafePrintServer
         string _fontName;
         int _fontSize;
         int _lineHeight;
-        string _printerName;
-
+        
         public void Post([FromBody] Order order)
         {
-            _printerName = ConfigurationManager.AppSettings["PrinterName"];
-
             var printDoc = new PrintDocument
                                {
                                    DefaultPageSettings =
@@ -31,8 +28,7 @@ namespace CafePrintServer
                                                },
                                            PaperSize = new PaperSize {Width = 312}
                                        },
-                                   DocumentName = order._id,
-                                   PrinterSettings = {PrinterName = _printerName}
+                                   DocumentName = order._id                                   
                                };
 
             printDoc.PrintPage += (sender, e) => PrintReceipt(e, order);
