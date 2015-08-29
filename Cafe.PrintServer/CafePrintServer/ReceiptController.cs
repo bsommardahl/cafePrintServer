@@ -4,18 +4,50 @@ using System.Configuration;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
-using System.Web.Http;
+using System.Reflection;
+using Nancy;
+using Nancy.ModelBinding;
+using log4net;
 
 namespace CafePrintServer
 {
-    public class ReceiptController : ApiController
+    public class ReceiptController : NancyModule
     {
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         string _fontName;
         int _fontSize;
         int _lineHeight;
-        
-        public void Post([FromBody] Order order)
+
+        public ReceiptController()
         {
+            Post["/receipts"] = _ =>
+                                    {
+                                        try
+                                        {
+                                            Console.WriteLine("Request received.");
+                                            var order = this.Bind<Order>();
+                                            Console.WriteLine("Order retrieved from request.");
+                                            PrintOrderReceipt(order);
+                                            return Response;
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine(ex.Message);
+                                            return Response.AsJson(new {message = ex.Message},
+                                                                   HttpStatusCode.InternalServerError);
+                                        }
+                                    };
+        }
+
+        void PrintOrderReceipt(Order order)
+        {
+            string printerName = ConfigurationManager.AppSettings["PrinterName"];
+            int leftMarginInHundredthsOfAnInch = Convert.ToInt32(ConfigurationManager.AppSettings["LeftMarginInHundredthsOfAnInch"] ?? "0");
+            int topMarginInHundredthsOfAnInch = Convert.ToInt32(ConfigurationManager.AppSettings["TopMarginInHundredthsOfAnInch"] ?? "0");
+            int paperWidthInHundredthsOfAnInch =
+                Convert.ToInt32(ConfigurationManager.AppSettings["PaperWidthInHundredthsOfAnInch"] ?? "0");
+
             var printDoc = new PrintDocument
                                {
                                    DefaultPageSettings =
@@ -23,20 +55,41 @@ namespace CafePrintServer
                                            Landscape = false,
                                            Margins =
                                                {
-                                                   Left = 50+(312/2),
-                                                   Top = 50
+                                                   Left = leftMarginInHundredthsOfAnInch,
+                                                   Top = topMarginInHundredthsOfAnInch
                                                },
-                                           PaperSize = new PaperSize {Width = 312}
+                                           PaperSize = new PaperSize {Width = paperWidthInHundredthsOfAnInch}
                                        },
-                                   DocumentName = order._id                                   
+                                   DocumentName = order._id
                                };
 
-            printDoc.PrintPage += (sender, e) => PrintReceipt(e, order);
+            if (!string.IsNullOrEmpty(printerName))
+            {
+                printDoc.PrinterSettings = new PrinterSettings
+                                               {
+                                                   PrinterName = printerName
+                                               };
+            }
 
+            printDoc.PrintPage += (sender, e) =>
+                                      {
+                                          Console.WriteLine("Printing started...");
+                                          Log.Info("Printing started...");
+                                          PrintReceipt(e, order);
+                                      };
+
+            printDoc.EndPrint += (sender, args) =>
+                                     {
+                                         string message = string.Format("Receipt printed for {0} on {1} at {2}.",
+                                                                        order.CustomerName,
+                                                                        DateTime.Now.ToShortDateString(),
+                                                                        DateTime.Now.ToShortTimeString());
+                                         Console.WriteLine(message);
+                                         Log.Info(message);
+                                     };
+
+            Console.WriteLine("Requesting print....");
             printDoc.Print(); //start the print
-
-            Console.WriteLine("Receipt printed for {0} on {1} at {2}.", order.CustomerName,
-                              DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString());
         }
 
         string FormatLempira(object val)
@@ -47,27 +100,33 @@ namespace CafePrintServer
 
         void PrintReceipt(PrintPageEventArgs e, Order order)
         {
+            Console.Write(".");
             Graphics g = e.Graphics;
 
-            _fontSize = Convert.ToInt32((string) ConfigurationManager.AppSettings["FontSize"]);
+            _fontSize = Convert.ToInt32(ConfigurationManager.AppSettings["FontSize"]);
             _fontName = ConfigurationManager.AppSettings["FontName"];
-            
+
+            Console.Write(".");
             int x1 = e.MarginBounds.Left;
             int y1 = e.MarginBounds.Top;
-            
-            _lineHeight = 15;
 
+            _lineHeight = Convert.ToInt32(Math.Round(_fontSize*1.5));
+
+            Console.Write(".");
             var centering = new StringFormat
                                 {LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center};
 
             var titleFont = new Font(_fontName, Convert.ToInt32(_fontSize*1.5), FontStyle.Bold);
-            var headerPrinter = new LinePrinter(g, titleFont, Brushes.Black, x1, y1, Convert.ToInt32(_lineHeight*1.5),
+            var headerPrinter = new LinePrinter(g, titleFont, Brushes.Black, x1, y1, _lineHeight,
                                                 centering);
+            Console.Write(".");
             headerPrinter.Print("Café El Gringo");
 
             var mainFont = new Font(_fontName, _fontSize);
-            var subHeaderPrinter = new LinePrinter(g, mainFont, Brushes.Black, x1, headerPrinter.Top, _lineHeight, centering);
+            var subHeaderPrinter = new LinePrinter(g, mainFont, Brushes.Black, x1, headerPrinter.Top, _lineHeight,
+                                                   centering);
 
+            Console.Write(".");
             subHeaderPrinter.Print("RTN: 08221886000084");
             subHeaderPrinter.Print("Barrio el Centro");
             subHeaderPrinter.Print("Santa Ana, FM");
@@ -75,17 +134,20 @@ namespace CafePrintServer
             subHeaderPrinter.Print("");
             subHeaderPrinter.Print("FACTURA");
             subHeaderPrinter.Print("");
-            
-            var tablePrinter = new LinePrinter(g, mainFont, Brushes.Black, x1, subHeaderPrinter.Top, 13, centering);
+
+            Console.Write(".");
+            var tablePrinter = new LinePrinter(g, mainFont, Brushes.Black, x1, subHeaderPrinter.Top, _lineHeight, centering);
             tablePrinter.Print("----------------------------------------");
             tablePrinter.Print("Cant.  | Descripcion           |   Valor");
             tablePrinter.Print("----------------------------------------");
+            Console.Write(".");
             IEnumerable<IGrouping<string, OrderItem>> itemGroups = order.Items.GroupBy(x => x.Name);
             foreach (var orderItem in itemGroups)
             {
                 string cant = string.Format("{0}x{1}", orderItem.Count(), orderItem.First().Price);
                 double valor = orderItem.First().Price*orderItem.Count();
                 tablePrinter.Print("{0,-6} | {1,-21} | {2,7}", cant, orderItem.First().Name, "L " + valor);
+                Console.Write(".");
             }
             tablePrinter.Print("----------------------------------------");
             tablePrinter.Print("                   Sub Total: {0}", FormatLempira(order.Items.Sum(x => x.Price)));
@@ -93,6 +155,7 @@ namespace CafePrintServer
             tablePrinter.Print("                   ISV:       {0}", FormatLempira(order.TaxPaid));
             tablePrinter.Print("                   Total:     {0}", FormatLempira(order.AmountPaid));
             tablePrinter.Print("");
+            Console.Write(".");
             tablePrinter.Print("                   Effectivo: {0}", FormatLempira(order.AmountPaid));
             tablePrinter.Print("                   Cambio:    {0}", FormatLempira(order.AmountPaid));
             tablePrinter.Print("");
@@ -103,6 +166,7 @@ namespace CafePrintServer
             infoPrinter.Print("Condición {0}", "CONTADO");
             infoPrinter.Print("Fecha {0}/{1}/{2} - Hora {3}", order.Paid.Day, order.Paid.Month, order.Paid.Year,
                               order.Paid.ToShortTimeString());
+            Console.Write(".");
             infoPrinter.Print("Cajero {0} - Caja #{1}", "Pamela M", 1);
             infoPrinter.Print("");
 
@@ -112,67 +176,14 @@ namespace CafePrintServer
 
             footerPrinter.Print("");
             footerPrinter.Print("Gracias por su compra.");
+            Console.Write(".");
             footerPrinter.Print("La factura es benefició de todos: Exijala!");
             footerPrinter.Print("No se aceptan cambios ni devoluciones.");
             footerPrinter.Print("");
             footerPrinter.Print("www.CafeElGringo.com");
 
             e.HasMorePages = false; //set to true to continue printing next page
+            Console.Write(".");
         }
-    }
-
-    public class LinePrinter
-    {
-        readonly Brush _brush;
-        readonly Font _font;
-        readonly StringFormat _format;
-        readonly Graphics _graphics;
-        readonly int _left;
-        readonly int _lineHeight;
-        public int Top;
-
-        public LinePrinter(Graphics graphics, Font font, Brush brush, int left, int top, int lineHeight,
-                           StringFormat format)
-        {
-            _graphics = graphics;
-            _font = font;
-            _brush = brush;
-            Top = top;
-            _lineHeight = lineHeight;
-            _format = format;
-            _left = left;
-        }
-
-        public void Print(string text, params object[] args)
-        {
-            if (args.Length > 0)
-                text = string.Format(text, args);
-
-            _graphics.DrawString(text, _font, _brush, _left, Top, _format);
-            Top += _lineHeight;
-        }
-    }
-
-    public class Order
-    {
-        public double TaxPaid { get; set; }
-        public string LocationId { get; set; }
-        public DateTime Paid { get; set; }
-        public DateTime Created { get; set; }
-        public double AmountPaid { get; set; }
-        public string CustomerName { get; set; }
-        public bool AllDelivered { get; set; }
-        public List<OrderItem> Items { get; set; }
-        public string _id { get; set; }
-    }
-
-    public class OrderItem
-    {
-        public string _id { get; set; }
-        public string Tag { get; set; }
-        public double Price { get; set; }
-        public double TaxRate { get; set; }
-        public bool Delivered { get; set; }
-        public string Name { get; set; }
     }
 }
