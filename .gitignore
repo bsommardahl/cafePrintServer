@@ -1,3 +1,30 @@
+.sass-cache/*
+codekit-config.json
+*.orig
+/lib
+/deploy
+/specs
+
+#developer-specific files
+connectionStrings.config
+mailSettings.config
+thumbs.db
+# Ignore Node & Bower
+###################
+node_modules
+bower_components
+build
+typings/
+#.tmp
+*.map.*
+*.js.map
+src/Unicron.Web/Client/src/app/**/*.js
+src/Unicron.Web/Client/src/specs/**/*.specs.js
+/src/Unicron.Web/Client/src/report/coverage/**/*.*
+/src/Unicron.Web/Client/.tmp/**/*.*
+/src/Unicron.Web/Client/tmp/**/*.*
+/src/Client/tmp/*.*
+
 #OS junk files
 [Tt]humbs.db
 *.DS_Store
@@ -29,18 +56,28 @@ obj/
 [Bb]in
 [Dd]ebug*/
 [Rr]elease*/
+
 Ankh.NoLoad
 
 #Tooling
 _ReSharper*/
 *.resharper
+*.DotSettings
+*.DotSettings.*
 [Tt]est[Rr]esult*
 
-#Project files
+#Build artifacts
 [Bb]uild/
+[Dd]eploy/
+report/coverage/
+coverage
+database_deployment
 
 #Subversion files
 .svn
 
 # Office Temp Files
 ~$*
+
+/src/NovaEnergy.Presentation/local.config
+/src/DatabaseDeployer/local.config
