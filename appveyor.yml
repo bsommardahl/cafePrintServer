@@ -30,7 +30,7 @@ test:
   assemblies:
     - specs\**\*.Specs.dll
 artifacts:
-  - path: deploy\CafePrintServer.*.zip
+  - path: deploy\CafePrintServer*.zip
     name: server
 notifications:
   - provider: Webhook
