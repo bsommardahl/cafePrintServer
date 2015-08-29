@@ -28,7 +28,15 @@ namespace CafePrintServer
                                             Console.WriteLine("Request received.");
                                             var order = this.Bind<Order>();
                                             Console.WriteLine("Order retrieved from request.");
-                                            PrintOrderReceipt(order);
+                                            string printerName = ConfigurationManager.AppSettings["PrinterName"];
+                                            int leftMarginInHundredthsOfAnInch = Convert.ToInt32((string)Request.Query.Left ?? 
+                                            ConfigurationManager.AppSettings["LeftMarginInHundredthsOfAnInch"] ?? "0");
+                                            int topMarginInHundredthsOfAnInch = Convert.ToInt32((string)Request.Query.Top ?? ConfigurationManager.AppSettings["TopMarginInHundredthsOfAnInch"] ?? "0");
+                                            int paperWidthInHundredthsOfAnInch =
+                                                Convert.ToInt32((string)Request.Query.PaperWidth ?? ConfigurationManager.AppSettings["PaperWidthInHundredthsOfAnInch"] ?? "0");
+
+            
+                                            PrintOrderReceipt(order, printerName, leftMarginInHundredthsOfAnInch, topMarginInHundredthsOfAnInch, paperWidthInHundredthsOfAnInch);
                                             return Response;
                                         }
                                         catch (Exception ex)
@@ -40,14 +48,8 @@ namespace CafePrintServer
                                     };
         }
 
-        void PrintOrderReceipt(Order order)
+        void PrintOrderReceipt(Order order, string printerName, int leftMargin, int topMargin, int paperWidth)
         {
-            string printerName = ConfigurationManager.AppSettings["PrinterName"];
-            int leftMarginInHundredthsOfAnInch = Convert.ToInt32(ConfigurationManager.AppSettings["LeftMarginInHundredthsOfAnInch"] ?? "0");
-            int topMarginInHundredthsOfAnInch = Convert.ToInt32(ConfigurationManager.AppSettings["TopMarginInHundredthsOfAnInch"] ?? "0");
-            int paperWidthInHundredthsOfAnInch =
-                Convert.ToInt32(ConfigurationManager.AppSettings["PaperWidthInHundredthsOfAnInch"] ?? "0");
-
             var printDoc = new PrintDocument
                                {
                                    DefaultPageSettings =
@@ -55,10 +57,10 @@ namespace CafePrintServer
                                            Landscape = false,
                                            Margins =
                                                {
-                                                   Left = leftMarginInHundredthsOfAnInch,
-                                                   Top = topMarginInHundredthsOfAnInch
+                                                   Left = leftMargin,
+                                                   Top = topMargin
                                                },
-                                           PaperSize = new PaperSize {Width = paperWidthInHundredthsOfAnInch}
+                                           PaperSize = new PaperSize {Width = paperWidth}
                                        },
                                    DocumentName = order._id
                                };
