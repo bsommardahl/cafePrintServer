@@ -32,12 +32,6 @@ test:
 artifacts:
   - path: deploy\CafePrintServer.*.zip
     name: server
-  
-deploy:
-  - provider: Environment
-    name: cafe
-    artifacts: server
-
 notifications:
   - provider: Webhook
     url: http://appharborservicehookendpoint.apphb.com/build/appveyor/test
