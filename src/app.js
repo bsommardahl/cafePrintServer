@@ -7,6 +7,39 @@ var app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
+app.post('/test', function(req, res){
+	var order = {
+  	"TaxPaid": 110,
+  	"LocationId": "location",
+  	"Paid": "1994-11-05T08:15:30-05:00",
+  	"Created": "1994-11-05T08:15:30-05:00",
+  	"AmountPaid": 432,
+  	"CustomerName": "Byron",
+  	"AllDelivered": true,
+  	"_id": "sampleId",
+  	"Items": [
+  	    {
+  			"Price": 50,
+  			"Delivered": true,
+  			"Name": "coffee"
+  		},
+  		{
+  			"Price": 50,
+  			"Delivered": true,
+  			"Name": "coffee"
+  		},
+  		{
+  			"Price": 70,
+  			"Delivered": true,
+  			"Name": "cake"
+  		}]
+  };
+
+  var receiptText = formatReceipt(order);  
+  res.send("Printing test receipt...");
+  printText(receiptText);
+});
+
 app.get('/printers', function(req, res){
 	var util = require('util');
 	res.send("installed printers: "
