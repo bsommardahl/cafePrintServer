@@ -30,5 +30,12 @@
     "reftroll": "^1.0.31",
     "run-sequence": "^1.1.0",
     "through2": "^0.6.5"
+  },
+  "dependencies": {
+    "body-parser": "^1.14.0",
+    "express": "^4.13.3",
+    "moment": "^2.10.6",
+    "underscore": "^1.8.3",
+    "printer": "^0.1.1"
   }
 }
