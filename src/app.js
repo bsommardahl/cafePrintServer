@@ -52,13 +52,14 @@ var itemsHeader =
 
 var totals = 
     "----------------------------------------" + "\n"+
-	"                   Sub Total:    L {0}" + "\n"+
-	"                   Descuento:    L {1}" + "\n"+
-	"                   ISV:          L {2}" + "\n"+
-	"                   Total:        L {3}" + "\n"+
+	"                Importe gravado: L {0}" + "\n"+
+	"                 Importe exento: L {1}" + "\n"+
+	"                      Descuento: L {1}" + "\n"+
+	"                            ISV: L {2}" + "\n"+
+	"                  Total a pagar: L {3}" + "\n"+
 	"\r"+
-	"                   Effectivo:    L {4}" + "\n"+
-	"                   Cambio:       L {5}" + "\n" +
+	"                      Effectivo: L {4}" + "\n"+
+	"                         Cambio: L {5}" + "\n" +
     "----------------------------------------" + "\n" +
     "\n";
 
