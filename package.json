@@ -34,8 +34,10 @@
   "dependencies": {
     "body-parser": "^1.14.0",
     "express": "^4.13.3",
+    "guid": "0.0.12",
+    "html-pdf": "^1.4.0",
     "moment": "^2.10.6",
-    "underscore": "^1.8.3",
-    "printer": "^0.1.1"
+    "printer": "^0.1.1",
+    "underscore": "^1.8.3"
   }
 }

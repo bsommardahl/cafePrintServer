@@ -51,10 +51,10 @@ app.post('/preview', function (req, res) {
 });
 
 app.post('/print', function (req, res) {
-  var order = getOrderFromRequest(req.body);
-  var receiptText = formatReceipt(order);  
-  res.send("Printing receipt for order " + order._id);
-  printText(receiptText);
+	var order = getOrderFromRequest(req.body);
+	var receiptText = formatReceipt(order);  
+	res.send("Printing receipt for order " + order._id);	
+	printText(receiptText);
 });
 
 var server = app.listen(3000, function () {
@@ -215,19 +215,19 @@ if (!String.prototype.format) {
 var printer = require("printer");
 
 var printText = function(text){
-
-	printer.printDirect({
-		data: "\x1b\x2a\x00\x05\x00\x80\x40\x20\x10\x08" + text,
-		// options: {
-		// 	cpi: 17,
-		// 	lpi: 8
-		// },
-		type: 'RAW',
-		success: function(jobId){
-			console.log("Job " + jobId + " printed.");
-		},
-		error: function(err){
-			console.log(err);
-		}
-	})
+	var pdf = require('html-pdf');
+	var filename = "temp.pdf";
+	pdf.create(html, options).toFile(filename, function(err, file) {
+		if (err) return console.log(err);
+		console.log("Text converted to pdf. Printing file...");
+		printer.printFile({
+			filename: file.filename,
+			success: function(jobId){
+				console.log("Job " + jobId + " printed.");
+			},
+			error: function(err){
+				console.log(err);
+			}
+		});
+	});
 };
