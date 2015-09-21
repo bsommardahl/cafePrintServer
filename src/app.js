@@ -223,8 +223,9 @@ var printText = function(html){
 	pdf.create(html, options).toFile(filename, function(err, file) {
 		if (err) return console.log(err);
 		console.log("Text converted to pdf. Printing file...");
+
 		printer.printFile({
-			filename: file.filename,
+			filename: filename,
 			success: function(jobId){
 				console.log("Job " + jobId + " printed.");
 			},

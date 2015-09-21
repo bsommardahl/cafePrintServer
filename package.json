@@ -37,7 +37,7 @@
     "guid": "0.0.12",
     "html-pdf": "^1.4.0",
     "moment": "^2.10.6",
-    "printer": "^0.1.1",
+    "printer": "git+https://github.com/tojocky/node-printer.git",
     "underscore": "^1.8.3"
   }
 }
