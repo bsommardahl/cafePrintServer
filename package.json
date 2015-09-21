@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "body-parser": "^1.14.0",
+    "dot": "^1.0.3",
     "express": "^4.13.3",
     "guid": "0.0.12",
     "html-pdf": "^1.4.0",

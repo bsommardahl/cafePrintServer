@@ -7,8 +7,8 @@ var app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-app.post('/test', function(req, res){
-	var order = {
+var getTestOrder = function(){
+	return {
   	"TaxPaid": 110,
   	"LocationId": "location",
   	"Paid": "1994-11-05T08:15:30-05:00",
@@ -34,27 +34,54 @@ app.post('/test', function(req, res){
   			"Name": "cake"
   		}]
   };
+};
 
-  var receiptText = formatReceipt(order);  
-  res.send("Printingn test receipt...");
-  printText(receiptText);
+app.post('/test', function(req, res){
+	var order = getTestOrder();
+	renderOrder(order, function(html){
+	  	res.send("Printing test receipt...");
+	  	printText(html);
+	  });  
 });
 
 app.get('/printers', function(req, res){
 	res.send({printers: printer.getPrinters(), formats: printer.getSupportedPrintFormats(), jobs: printer.getSupportedJobCommands()});
 });
 
+app.get('/preview', function (req, res) {
+	var order = getOrderFromRequest(getTestOrder());
+	renderOrder(order, function(html){
+	  	res.send(html);	
+	  });  
+});
+
 app.post('/preview', function (req, res) {
   var order = getOrderFromRequest(req.body);
-  var receiptText = formatReceipt(order);
-  res.send(receiptText);
+  renderOrder(order, function(html){
+  	res.send(html);	
+  });  
 });
+
+var doT = require("dot");
+
+var renderOrder = function(order, callback){
+	fs = require('fs')
+	fs.readFile('orderTemplate.html', 'utf8', function (err,data) {
+		if (err) {
+			return console.log(err);
+		}
+		var engine = doT.template(data);
+		var resultText = engine(order);
+		callback(resultText);
+	});	
+};
 
 app.post('/print', function (req, res) {
 	var order = getOrderFromRequest(req.body);
-	var receiptText = formatReceipt(order);  
-	res.send("Printing receipt for order " + order._id);	
-	printText(receiptText);
+	renderOrder(order, function(html){
+		printText(html);  		
+		res.send("Printing receipt for order " + order._id);			
+  	});    	
 });
 
 var server = app.listen(3000, function () {
@@ -74,15 +101,6 @@ var footer =
     "No se aceptan cambios ni devoluciones." + "\n" +
 	"\n"+ 
     "www.CafeElGringo.com";
-
-var header = "<h1>Cafe El Gringo</h1></br>" + "\n" +
-	"RTN: 08221886000084" + "\n"+
-	"Barrio el Centro" + "\n"+
-	"Santa Ana, FM Honduras" + "\n"+
-	"Tel +504 9754-5002" + "\n"+
-	"\n"+
-	"FACTURA\n"+
-	"\n";
 
 var itemsHeader = 
     "----------------------------------------" + "\n"+
@@ -177,6 +195,11 @@ var leftAlign = function(str, len){
 };
 
 var getOrderFromRequest = function(data){
+
+	var itemGroups = _.groupBy(data.Items,  function(i){
+		return i.Name;
+	});
+	
 	var order = {
   	TaxPaid: data.TaxPaid,
   	LocationId: data.LocationId,
@@ -186,14 +209,24 @@ var getOrderFromRequest = function(data){
   	CustomerName: data.CustomerName,
   	AllDelivered: data.AllDelivered,
   	_id: data._id,
-  	Items: _.map(data.Items, function(i){
+  	Items: _.map(Object.keys(itemGroups), function(itemName){
+		var group = itemGroups[itemName];
+		
+		var sum = 0;
+		if(group.length==1){
+			sum = group[0].Price;
+		}
+		else{
+			sum = _.reduce(group, function(prev, next){
+				return prev.Price + next.Price;
+			});
+		}
+
   		return {
-  			_id: i._id,
-  			Tag: i.Tag,
-  			Price: i.Price,
-  			TaxRate: i.TaxRate,
-  			Delivered: i.Delivered,
-  			Name: i.Name
+  			_id: group[0]._id,
+  			Quantity: group.length,
+  			Price: sum,
+  			Name: itemName
   		};
   	})
   };

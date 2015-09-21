@@ -1,0 +1,43 @@
+<html>
+<head>
+	<style type="text/css">
+		* {font-family: "courier"}
+		body {width: 200px; border: 1px solid black;}
+	</style>
+</head>
+<body>
+<p>
+	<h2>Cafe El Gringo</h2>
+	RTN: 08221886000084<br/>
+	Barrio el Centro<br/>
+	Santa Ana, FM Honduras<br/>
+	Tel +504 9754-5002<br/>
+</p>
+
+<p><h3>FACTURA</h3>
+
+<table border="1">
+	<thead>
+		<tr><th>Cant.</th><th>Descripcion</th><th>Valor</th></tr>
+	</thead>
+	<tbody>
+		{{~it.Items :value:index}}
+		<tr><td>{{=value.Quantity}}</td><td>{{=value.Name}}</td><td>{{=value.Price}}</td></tr>
+		{{~}}
+	</tbody>
+</table>
+</p>
+
+<p>
+	Factura Id: {{=it._id}}<br/>
+	Condicion: CONTADO<br/>
+	Fecha/Hora: {{=it.Paid}}<br/>
+	Cajero: Pamela M - Caje #1<br/>
+	Gracias por su compra.
+</p>
+
+<p>La factura es beneficio de todos. Exijela! No se aceptan cambios ni devoluciones.</p>
+
+<p>www.cafeElGringo.com</p> 
+
+</body></html>
