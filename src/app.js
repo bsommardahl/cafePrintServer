@@ -222,7 +222,7 @@ var printText = function(text){
 			cpi: 17,
 			lpi: 8
 		},
-		type: 'TEXT',
+		type: 'RAW',
 		success: function(jobId){
 			console.log("Job " + jobId + " printed.");
 		},
