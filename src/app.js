@@ -217,8 +217,10 @@ var printer = require("printer");
 var printText = function(text){
 
 	printer.printDirect({
-		data: "<EB><J11>"+text,
-		//type: 'TEXT',
+		data: text,
+		cpi: 17,
+		lpi: 8
+		type: 'AUTO',
 		success: function(jobId){
 			console.log("Job " + jobId + " printed.");
 		},
