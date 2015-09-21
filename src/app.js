@@ -218,7 +218,7 @@ var printText = function(text){
 
 	var raw = text;
 	printer.printDirect({
-		data: raw,
+		data: "N\nS4\nD15\nq400\nR\nB20,10,0,1,2,30,173,B,\"barcode\"\nP0\n",
 		type: 'RAW',
 		success: function(jobId){
 			console.log("Job " + jobId + " printed.");
