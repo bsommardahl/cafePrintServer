@@ -216,9 +216,8 @@ var printer = require("printer");
 
 var printText = function(text){
 
-	var raw = text;
 	printer.printDirect({
-		data: "N\nS4\nD15\nq400\nR\nB20,10,0,1,2,30,173,B,\"barcode\"\nP0\n",
+		data: "<EB><J11>"+text,
 		type: 'TEXT',
 		success: function(jobId){
 			console.log("Job " + jobId + " printed.");
