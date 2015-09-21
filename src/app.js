@@ -217,12 +217,12 @@ var printer = require("printer");
 var printText = function(text){
 
 	printer.printDirect({
-		data: text,
-		options: {
-			cpi: 17,
-			lpi: 8
-		},
-		type: 'RAW',
+		data: "\x1b\x2a\x00\x05\x00\x80\x40\x20\x10\x08" + text,
+		// options: {
+		// 	cpi: 17,
+		// 	lpi: 8
+		// },
+		type: 'TEXT',
 		success: function(jobId){
 			console.log("Job " + jobId + " printed.");
 		},
