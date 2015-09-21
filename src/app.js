@@ -218,12 +218,12 @@ var printText = function(html){
 	var printer = require("printer");
 	var filename = "temp.pdf";
 	var options = {
-		"width": "3in",
+		"width": "2.5in",
 		"border": {
-		    //"top": "1cm",            // default is 0, units: mm, cm, in, px
-		    "right": "1cm",
-		    //"bottom": "1cm",
-		    "left": "1cm"
+		    //"top": ".25in",            // default is 0, units: mm, cm, in, px
+		    "right": ".25in",
+		    //"bottom": ".25in",
+		    "left": ".25in"
 		  },
 	};
 	pdf.create(html, options).toFile(filename, function(err, file) {
