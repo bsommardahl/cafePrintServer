@@ -75,7 +75,7 @@ var footer =
 	"\n"+ 
     "www.CafeElGringo.com";
 
-var header = "Cafe El Gringo" + "\n" +
+var header = "<h1>Cafe El Gringo</h1></br>" + "\n" +
 	"RTN: 08221886000084" + "\n"+
 	"Barrio el Centro" + "\n"+
 	"Santa Ana, FM Honduras" + "\n"+
