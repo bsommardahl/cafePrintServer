@@ -214,9 +214,12 @@ if (!String.prototype.format) {
 
 var printer = require("printer");
 
-var printText = function(text){
+var printText = function(html){
 	var pdf = require('html-pdf');
 	var filename = "temp.pdf";
+	var options = {
+		"width": "3in"		
+	};
 	pdf.create(html, options).toFile(filename, function(err, file) {
 		if (err) return console.log(err);
 		console.log("Text converted to pdf. Printing file...");
