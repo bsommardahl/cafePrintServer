@@ -36,7 +36,7 @@ app.post('/test', function(req, res){
   };
 
   var receiptText = formatReceipt(order);  
-  res.send("Printing test receipt...");
+  res.send("Printingn test receipt...");
   printText(receiptText);
 });
 
@@ -57,6 +57,14 @@ app.post('/print', function (req, res) {
   var receiptText = formatReceipt(order);  
   res.send("Printing receipt for order " + order._id);
   printText(receiptText);
+});
+
+var server = app.listen(3000, function () {
+	var host = server.address().address;
+	var port = server.address().port;
+	var startupMessage = 'Cafe Receipt Printserver ready at http://' + host + ':' + port + ' on ' + moment().format();
+	console.log(startupMessage)
+	printText(startupMessage);
 });
 
 var itemTemplate =  "{0} | {1} | {2}\n";
@@ -193,12 +201,6 @@ var getOrderFromRequest = function(data){
   };
   return order;
 };
-
-var server = app.listen(3000, function () {
-  var host = server.address().address;
-  var port = server.address().port;
-  console.log('Cafe Receipt Printserver ready at http://%s:%s', host, port);
-});
 
 if (!String.prototype.format) {
   String.prototype.format = function() {
