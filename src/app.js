@@ -219,7 +219,7 @@ var printText = function(text){
 	var raw = text;
 	printer.printDirect({
 		data: raw,
-		type: 'AUTO',
+		type: 'RAW',
 		success: function(jobId){
 			console.log("Job " + jobId + " printed.");
 		},
