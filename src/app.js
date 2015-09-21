@@ -218,8 +218,10 @@ var printText = function(text){
 
 	printer.printDirect({
 		data: text,
-		cpi: 17,
-		lpi: 8
+		options: {
+			cpi: 17,
+			lpi: 8
+		},
 		type: 'TEXT',
 		success: function(jobId){
 			console.log("Job " + jobId + " printed.");
