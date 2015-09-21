@@ -212,13 +212,19 @@ if (!String.prototype.format) {
   };
 }
 
-var printer = require("printer");
 
 var printText = function(html){
 	var pdf = require('html-pdf');
+	var printer = require("printer");
 	var filename = "temp.pdf";
 	var options = {
-		"width": "3in"		
+		"width": "3in",
+		"border": {
+		    //"top": "1cm",            // default is 0, units: mm, cm, in, px
+		    "right": "1cm",
+		    //"bottom": "1cm",
+		    "left": "1cm"
+		  },
 	};
 	pdf.create(html, options).toFile(filename, function(err, file) {
 		if (err) return console.log(err);
