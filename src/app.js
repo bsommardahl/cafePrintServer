@@ -41,7 +41,7 @@ app.post('/test', function(req, res){
 });
 
 app.get('/printers', function(req, res){
-	res.send({printers: printer.getPrinters(), formats: printer.getSupportedPrintFormats()});
+	res.send({printers: printer.getPrinters(), formats: printer.getSupportedPrintFormats(), jobs: printer.getSupportedJobCommands()});
 });
 
 app.post('/preview', function (req, res) {
@@ -215,9 +215,11 @@ if (!String.prototype.format) {
 var printer = require("printer");
 
 var printText = function(text){
+
+	var raw = text;
 	printer.printDirect({
-		data: text,
-		type: 'TEXT',
+		data: raw,
+		type: 'RAW',
 		success: function(jobId){
 			console.log("Job " + jobId + " printed.");
 		},
