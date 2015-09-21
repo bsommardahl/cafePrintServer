@@ -218,7 +218,7 @@ var printText = function(text){
 
 	printer.printDirect({
 		data: "<EB><J11>"+text,
-		type: 'TEXT',
+		//type: 'TEXT',
 		success: function(jobId){
 			console.log("Job " + jobId + " printed.");
 		},
