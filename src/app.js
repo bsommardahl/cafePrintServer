@@ -41,9 +41,7 @@ app.post('/test', function(req, res){
 });
 
 app.get('/printers', function(req, res){
-	var util = require('util');
-	res.send("installed printers: "
-		+ JSON.stringify(printer.getPrinters()));
+	res.send({printers: printer.getPrinters(), formats: printer.getSupportedPrintFormats()});
 });
 
 app.post('/preview', function (req, res) {
