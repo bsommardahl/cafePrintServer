@@ -220,7 +220,7 @@ var printText = function(text){
 		data: text,
 		cpi: 17,
 		lpi: 8
-		type: 'AUTO',
+		type: 'TEXT',
 		success: function(jobId){
 			console.log("Job " + jobId + " printed.");
 		},
