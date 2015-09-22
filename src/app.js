@@ -252,7 +252,7 @@ var printText = function(html){
 	var filename = "temp.pdf";
 	var options = {
 		"width": "2in",
-		"height": "4in"
+		"height": "4in",
 		"border": "0", 
 		"type": "pdf",             // allowed file types: png, jpeg, pdf 
 		"quality": "75",           // only used for types png & jpeg 
