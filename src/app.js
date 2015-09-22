@@ -251,13 +251,17 @@ var printText = function(html){
 	var printer = require("printer");
 	var filename = "temp.pdf";
 	var options = {
-		"width": "2.0in",
-		"border": {
+		"width": "2in",
+		"height": "4in"
+		"border": "0", 
+		"type": "pdf",             // allowed file types: png, jpeg, pdf 
+		"quality": "75",           // only used for types png & jpeg 
+		//"border": {
 		    //"top": ".25in",            // default is 0, units: mm, cm, in, px
-		    "right": ".25in",
+		    //"right": ".25in",
 		    //"bottom": ".25in",
-		    //"left": ".25in"
-		  },
+		    //"left": ".25in"		    
+		  //},
 	};
 	pdf.create(html, options).toFile(filename, function(err, file) {
 		if (err) return console.log(err);
