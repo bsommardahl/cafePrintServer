@@ -1,7 +1,7 @@
 <html>
 <head>
 	<style type="text/css">
-		body { font-family: "arial"; font-size: 12px;}
+		body { font-family: "arial"; font-size: 13px;}
 		table { 
 			border-spacing: 0px;
 		    border-collapse: collapse;
@@ -37,17 +37,17 @@
 		<tr><td>{{=value.Quantity}}</td><td>{{=value.Name}}</td><td class="right">L {{=value.Price}}</td></tr>
 		{{~}}
 	</tbody>
+</table>
 
-	<tfoot>
-		<tr><td colspan="2" class="right">Importe gravado:</td><td class="right">L {{=it.SubTotal}}</td></tr>
-		<tr><td colspan="2" class="right">Importe exento:</td><td class="right">L 0</td></tr>
-		<tr><td colspan="2" class="right">Descuento:</td><td class="right">L 0</td></tr>
-		<tr><td colspan="2" class="right">ISV:</td><td class="right">L {{=it.TaxPaid}}</td></tr>
-		<tr><td colspan="2" class="right">Total a pagar:</td><td class="right">L {{=it.AmountPaid}}</td></tr>
-		<tr><td colspan="2" class="right">&nbsp;</td><td class="right"></td></tr>
-		<tr><td colspan="2" class="right">Effectivo:</td><td class="right">L {{=it.AmountPaid}}</td></tr>
-		<tr><td colspan="2" class="right">Cambio:</td><td class="right">L 0</td></tr>
-	</tfoot>
+<table>
+	<tr><td colspan="2" class="right">Importe gravado:</td><td class="right">L {{=it.SubTotal}}</td></tr>
+	<tr><td colspan="2" class="right">Importe exento:</td><td class="right">L 0</td></tr>
+	<tr><td colspan="2" class="right">Descuento:</td><td class="right">L 0</td></tr>
+	<tr><td colspan="2" class="right">ISV:</td><td class="right">L {{=it.TaxPaid}}</td></tr>
+	<tr><td colspan="2" class="right">Total a pagar:</td><td class="right">L {{=it.AmountPaid}}</td></tr>
+	<tr><td colspan="2" class="right">&nbsp;</td><td class="right"></td></tr>
+	<tr><td colspan="2" class="right">Effectivo:</td><td class="right">L {{=it.AmountPaid}}</td></tr>
+	<tr><td colspan="2" class="right">Cambio:</td><td class="right">L 0</td></tr>	
 </table>
 
 <p class="center">
