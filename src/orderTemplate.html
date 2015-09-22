@@ -1,7 +1,7 @@
 <html>
 <head>
 	<style type="text/css">
-		body {font-family: "courier"; font-size: 10px;}
+		body { font-family: "arial"; font-size: 12px;}
 		table { 
 			border-spacing: 0px;
 		    border-collapse: collapse;
@@ -31,20 +31,22 @@
 	<thead>
 		<tr><th>Cant.</th><th>Descripcion</th><th class="right">Valor</th></tr>
 	</thead>
+	
 	<tbody>
 		{{~it.Items :value:index}}
-		<tr><td>{{=value.Quantity}}</td><td>{{=value.Name}}</td><td class="right">{{=value.Price}}</td></tr>
+		<tr><td>{{=value.Quantity}}</td><td>{{=value.Name}}</td><td class="right">L {{=value.Price}}</td></tr>
 		{{~}}
 	</tbody>
+
 	<tfoot>
-		<tr><td></td><td class="right">Importe gravado:</td><td class="right">L {{=it.SubTotal}}</td></tr>
-		<tr><td></td><td class="right">Importe exento:</td><td class="right">L 0</td></tr>
-		<tr><td></td><td class="right">Descuento:</td><td class="right">L 0</td></tr>
-		<tr><td></td><td class="right">ISV:</td><td class="right">L {{=it.TaxPaid}}</td></tr>
-		<tr><td></td><td class="right">Total a pagar:</td><td class="right">L {{=it.AmountPaid}}</td></tr>
-		<tr><td></td><td class="right">&nbsp;</td><td class="right"></td></tr>
-		<tr><td></td><td class="right">Effectivo:</td><td class="right">L {{=it.AmountPaid}}</td></tr>
-		<tr><td></td><td class="right">Cambio:</td><td class="right">L 0</td></tr>
+		<tr><td colspan="2" class="right">Importe gravado:</td><td class="right">L {{=it.SubTotal}}</td></tr>
+		<tr><td colspan="2" class="right">Importe exento:</td><td class="right">L 0</td></tr>
+		<tr><td colspan="2" class="right">Descuento:</td><td class="right">L 0</td></tr>
+		<tr><td colspan="2" class="right">ISV:</td><td class="right">L {{=it.TaxPaid}}</td></tr>
+		<tr><td colspan="2" class="right">Total a pagar:</td><td class="right">L {{=it.AmountPaid}}</td></tr>
+		<tr><td colspan="2" class="right">&nbsp;</td><td class="right"></td></tr>
+		<tr><td colspan="2" class="right">Effectivo:</td><td class="right">L {{=it.AmountPaid}}</td></tr>
+		<tr><td colspan="2" class="right">Cambio:</td><td class="right">L 0</td></tr>
 	</tfoot>
 </table>
 
