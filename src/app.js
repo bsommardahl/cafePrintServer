@@ -36,27 +36,19 @@ var getTestOrder = function(){
   };
 };
 
-app.post('/test', function(req, res){
-	var order = getOrderFromRequest(getTestOrder());
-	renderOrder(order, function(html){
-	  	res.send("Printing test receipt...");
-	  	printText(html);
-	  });  
-});
-
 app.get('/printers', function(req, res){
 	res.send({printers: printer.getPrinters(), formats: printer.getSupportedPrintFormats(), jobs: printer.getSupportedJobCommands()});
 });
 
-app.get('/preview', function (req, res) {
-	var order = getOrderFromRequest(getTestOrder());
-	renderOrder(order, function(html){
-	  	res.send(html);	
-	  });  
-});
-
 app.post('/preview', function (req, res) {
   var order = getOrderFromRequest(req.body);
+  renderOrder(order, function(html){
+  	res.send(html);	
+  });  
+});
+
+app.get('/preview', function (req, res) {
+  var order = getOrderFromRequest(getTestOrder());
   renderOrder(order, function(html){
   	res.send(html);	
   });  
@@ -100,7 +92,7 @@ var doT = require("dot");
 
 var renderOrder = function(order, callback){
 	fs = require('fs')
-	fs.readFile('orderTemplate.html', 'utf8', function (err,data) {
+	fs.readFile(__dirname + '/orderTemplate.html', 'utf8', function (err,data) {
 		if (err) {
 			return console.log(err);
 		}
@@ -151,36 +143,18 @@ var getOrderFromRequest = function(data){
   return order;
 };
   
-if (!String.prototype.format) {
-  String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
-      return typeof args[number] != 'undefined'
-        ? args[number]
-        : match
-      ;
-    });
-  };
-}
-
-
 var printText = function(html){
 	var pdf = require('html-pdf');
 	var printer = require("printer");
-	var filename = "temp.pdf";
+	var filename = __dirname + "temp.pdf";
 	var options = {
 		"width": "2.5in",
 		"height": "4in",
 		"border": "0", 
-		"type": "pdf",             // allowed file types: png, jpeg, pdf 
-		"quality": "75",           // only used for types png & jpeg 
-		//"border": {
-		    //"top": ".25in",            // default is 0, units: mm, cm, in, px
-		    //"right": ".25in",
-		    //"bottom": ".25in",
-		    //"left": ".25in"		    
-		  //},
+		"type": "pdf",
+		"quality": "75",
 	};
+	
 	pdf.create(html, options).toFile(filename, function(err, file) {
 		if (err) return console.log(err);
 		console.log("Text converted to pdf. Printing file...");
