@@ -62,6 +62,14 @@ app.post('/preview', function (req, res) {
   });  
 });
 
+app.post('/print', function (req, res) {
+  var order = getOrderFromRequest(req.body);
+  renderOrder(order, function(html){
+  	printText(html);
+  	res.send(html);	
+  });  
+});
+
 var doT = require("dot");
 
 var renderOrder = function(order, callback){
