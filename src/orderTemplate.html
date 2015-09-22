@@ -1,43 +1,60 @@
 <html>
 <head>
 	<style type="text/css">
-		* {font-family: "courier"}
-		body {width: 200px; border: 1px solid black;}
+		body {font-family: "courier"; font-size: 11px; width: 250px; border: 1px solid black;}
+		table { 
+			border-spacing: 0px;
+		    border-collapse: collapse;
+		    width: 100%;
+		    font-size: 11px; 
+		}
+		td { border-bottom: solid 1px black;}
+		th { border-bottom: solid 2px black; text-align: left;}
+		.center { text-align: center; }
+		.right { text-align: right; }
+		.block { width: 48px; float: left; border: 1px solid black;}
 	</style>
 </head>
 <body>
-<p>
-	<h2>Cafe El Gringo</h2>
-	RTN: 08221886000084<br/>
+
+<h2 class="center">Cafe El Gringo</h2>
+<p class="center">
 	Barrio el Centro<br/>
 	Santa Ana, FM Honduras<br/>
 	Tel +504 9754-5002<br/>
+	RTN: 08221886000084	
 </p>
 
-<p><h3>FACTURA</h3>
+<h3 class="center">FACTURA</h3>
 
-<table border="1">
+<table>
 	<thead>
-		<tr><th>Cant.</th><th>Descripcion</th><th>Valor</th></tr>
+		<tr><th>Cant.</th><th>Descripcion</th><th class="right">Valor</th></tr>
 	</thead>
 	<tbody>
 		{{~it.Items :value:index}}
-		<tr><td>{{=value.Quantity}}</td><td>{{=value.Name}}</td><td>{{=value.Price}}</td></tr>
+		<tr><td>{{=value.Quantity}}</td><td>{{=value.Name}}</td><td class="right">{{=value.Price}}</td></tr>
 		{{~}}
 	</tbody>
 </table>
-</p>
 
-<p>
+<p class="center">
 	Factura Id: {{=it._id}}<br/>
 	Condicion: CONTADO<br/>
-	Fecha/Hora: {{=it.Paid}}<br/>
-	Cajero: Pamela M - Caje #1<br/>
+	Fecha/Hora:<br/> {{=it.Paid}}<br/>
+	Cajero: Pamela M - Caja #1<br/>
 	Gracias por su compra.
 </p>
 
-<p>La factura es beneficio de todos. Exijela! No se aceptan cambios ni devoluciones.</p>
+<p class="center">La factura es beneficio de todos. Exijela! No se aceptan cambios ni devoluciones.</p>
 
-<p>www.cafeElGringo.com</p> 
+<p class="center">www.cafeElGringo.com</p> 
+
+
+<div class="block">1</div>
+<div class="block">2</div>
+<div class="block">3</div>
+<div class="block">4</div>
+<div class="block">5</div>
 
 </body></html>
