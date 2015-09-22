@@ -70,6 +70,32 @@ app.post('/print', function (req, res) {
   });  
 });
 
+var server = app.listen(3000, function () {
+	var serverIp = getServerIp();
+	var host = server.address().address;
+	var port = server.address().port;
+	var startupMessage = 'Cafe Receipt Printserver ready at http://' + host + ':' + port + ' on ' + moment().format();
+	console.log(startupMessage)
+	printText(serverIp + " ready.");
+});
+
+var net = require('net');
+
+var getServerIp = function(){
+	var os = require('os');
+	var interfaces = os.networkInterfaces();
+	var ip = "127.0.0.1";
+	for(name in interfaces) {
+	    var interface = interfaces[name];
+	     interface.forEach(function(entry) {
+	    if(entry.family === 'IPv4' && entry.address.indexOf("169.254")==-1 && entry.address.indexOf("127.0")==-1) {	        
+	       ip = entry.address;
+	    }
+	  });
+	}
+	return ip;
+};
+
 var doT = require("dot");
 
 var renderOrder = function(order, callback){
@@ -83,22 +109,6 @@ var renderOrder = function(order, callback){
 		callback(resultText);
 	});	
 };
-
-app.post('/print', function (req, res) {
-	var order = getOrderFromRequest(req.body);
-	renderOrder(order, function(html){
-		printText(html);  		
-		res.send("Printing receipt for order " + order._id);			
-  	});    	
-});
-
-var server = app.listen(3000, function () {
-	var host = server.address().address;
-	var port = server.address().port;
-	var startupMessage = 'Cafe Receipt Printserver ready at http://' + host + ':' + port + ' on ' + moment().format();
-	console.log(startupMessage)
-	printText("__________");
-});
 
 var getOrderFromRequest = function(data){
 
