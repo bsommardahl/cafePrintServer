@@ -37,7 +37,7 @@ var getTestOrder = function(){
 };
 
 app.post('/test', function(req, res){
-	var order = getTestOrder();
+	var order = getOrderFromRequest(getTestOrder());
 	renderOrder(order, function(html){
 	  	res.send("Printing test receipt...");
 	  	printText(html);
@@ -107,19 +107,6 @@ var itemsHeader =
     "Cant.  | Descripcion           |   Valor" + "\n"+
     "----------------------------------------" + "\n";
 
-var totals = 
-    "----------------------------------------" + "\n"+
-	"                Importe gravado: L {0}" + "\n"+
-	"                 Importe exento: L {1}" + "\n"+
-	"                      Descuento: L {1}" + "\n"+
-	"                            ISV: L {2}" + "\n"+
-	"                  Total a pagar: L {3}" + "\n"+
-	"\r"+
-	"                      Effectivo: L {4}" + "\n"+
-	"                         Cambio: L {5}" + "\n" +
-    "----------------------------------------" + "\n" +
-    "\n";
-
 var receiptInfo = 
     "Factura {0}" + "\n"+
     "Condicion CONTADO" + "\n"+
@@ -132,17 +119,6 @@ var formatReceipt = function(order){
 	var totalsRendered = getTotalsRendered(order);
 	var receiptText = header + itemsHeader + itemsRendered + totalsRendered + receiptInfoRendered + footer;
 	return receiptText;
-};
-
-var getTotalsRendered = function(order){
-	var spacing = 6;
-	return totals.format(
-		rightAlign(order.AmountPaid - order.TaxPaid,spacing), 
-		rightAlign(0,spacing), 
-		rightAlign(order.TaxPaid,spacing),
-		rightAlign(order.AmountPaid,spacing), 
-		rightAlign(order.AmountPaid,spacing), 
-		rightAlign(0,spacing));
 };
 
 var getReceiptInfoRendered = function(order){
@@ -228,11 +204,13 @@ var getOrderFromRequest = function(data){
   			Price: sum,
   			Name: itemName
   		};
-  	})
+  	}),
+
+  	SubTotal: data.AmountPaid - data.TaxPaid  	
   };
   return order;
 };
-
+  
 if (!String.prototype.format) {
   String.prototype.format = function() {
     var args = arguments;
@@ -251,7 +229,7 @@ var printText = function(html){
 	var printer = require("printer");
 	var filename = "temp.pdf";
 	var options = {
-		"width": "2in",
+		"width": "2.5in",
 		"height": "4in",
 		"border": "0", 
 		"type": "pdf",             // allowed file types: png, jpeg, pdf 
