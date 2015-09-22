@@ -17,7 +17,7 @@ Tech Used:
 
 Tech: | Version: | Purpose: | Site:
 --- | --- | --- | ---
-Node | v0.12.7 | Platform | http://nodejs.com
+Node | 0.12.7 | Platform | http://nodejs.com
 express | 4.13.3 | Web framework | http://expressjs.com/
 dot | 1.0.3 | View engine | http://olado.github.io/doT
 html-pdf | 1.4.0 | Convert rendered html to PDF | https://www.npmjs.com/package/html-pdf
