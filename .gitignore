@@ -4,7 +4,7 @@ codekit-config.json
 /lib
 /deploy
 /specs
-temp.pdf
+src/temp.pdf
 #developer-specific files
 connectionStrings.config
 mailSettings.config
